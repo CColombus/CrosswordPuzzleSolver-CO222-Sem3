@@ -1,3 +1,4 @@
 # Exclude executables from Repo
 *.exe
 *.out
+.vscode
