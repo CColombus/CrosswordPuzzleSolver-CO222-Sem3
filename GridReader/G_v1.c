@@ -1,4 +1,3 @@
-//program eka gahala iwara unama grid eke akuruth thiyanawa kiyala mathak une mahaththayo. eka passe hadala dennm :)
 #include <stdio.h>
 #include <string.h>
 
