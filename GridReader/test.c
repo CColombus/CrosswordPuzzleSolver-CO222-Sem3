@@ -61,7 +61,6 @@ int main(){
     for (int i = 0; i<n; ++i){
         printf("The vertical space at index [%d][%d] is %d spaces long and the format of the block is %s\n",v_vals[i].index_v[0][0], v_vals[i].index_v[0][1], v_vals[i].length_v, v_vals[i].setup_v);
     }
-
 }
 
 //funtion to get the horizontal block information
@@ -77,6 +76,9 @@ int horizonSpace(char grid[][100], int k, h_space vals[]){
                     I = i;
                     J = j;
                 }
+            }
+            else if((grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90)) && j != J + count_h ){
+                count_h = 0;
             }
 
             if (count_h > 1 && (grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90))){
@@ -94,10 +96,6 @@ int horizonSpace(char grid[][100], int k, h_space vals[]){
                 count_h = 0;
                 ++m;
             }
-
-            if((grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90))){
-                count_h = 0;
-            }
         }
     }
     return vals, m;
@@ -108,7 +106,7 @@ int horizonSpace(char grid[][100], int k, h_space vals[]){
 int vertSpace(char transpose[][100], int k, v_space v_vals[]){
     int n =0;
     char temp_n[100];
-    for (int i = 0; i<100; ++i){
+    for (int i = 0; i<=k; ++i){
         int count_v = 0, X, Y;
         for (int j = 0; j <100; ++j){
             if (transpose[i][j] == '#' || (transpose[i][j] >=65 && transpose[i][j] <=90)){
@@ -117,6 +115,9 @@ int vertSpace(char transpose[][100], int k, v_space v_vals[]){
                     Y = i;
                     X = j;
                 }
+            }
+            else if((transpose[i][j] != '#' && (transpose[i][j] < 65 || transpose[i][j] > 90)) && j != X + count_v){
+                count_v = 0;
             }
 
             if (count_v > 1 && (transpose[i][j] != '#' && (transpose[i][j] < 65 || transpose[i][j] > 90))){
@@ -133,10 +134,6 @@ int vertSpace(char transpose[][100], int k, v_space v_vals[]){
                 memset(&temp_n[0], 0, sizeof(temp_n)); //emptying the temp array for the next iteration
                 count_v = 0;
                 ++n;
-            }
-
-            if((transpose[i][j] != '#' && (transpose[i][j] < 65 || transpose[i][j] > 90)) ){
-                count_v = 0;
             }
         }
     }
