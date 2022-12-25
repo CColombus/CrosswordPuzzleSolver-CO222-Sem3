@@ -3,8 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-#define MAX_WORD_LEN 10
-
 typedef struct _
 {
     int index;
@@ -14,7 +12,7 @@ typedef struct _
 
 
 //create global structs for words
-sword word[100];
+sword word[10];
 void procWords(char*[],int);
 
 int main(){
