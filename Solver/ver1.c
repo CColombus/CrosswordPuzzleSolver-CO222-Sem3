@@ -12,6 +12,7 @@ typedef struct _
     size_t length;
 }sword;
 
+
 //create global structs for words
 sword word[100];
 void procWords(char*[],int);
@@ -19,6 +20,7 @@ void procWords(char*[],int);
 int main(){
     char *inputs[]={"apple","banana","kivi","man","jumbotron","cat"};
     procWords(inputs,6);
+
     printf("Words processed!!");
     return 0;
 }
@@ -50,6 +52,7 @@ void procWords(char *inputs[],int count)
     }
     
     
+
     //assign word structs
     for (size_t i = 0; i < count; i++)
     {
