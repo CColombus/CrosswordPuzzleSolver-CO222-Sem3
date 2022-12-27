@@ -26,13 +26,13 @@ size_t word_count;
 sword word[20]; // amount of words given
 
 // Function prototype
-int solve();                                                   // solve puzzle
-int iterate(int arr[], int n, int stack, int nb, int starr[]); // get each combination
-void setWords(int[]);                                          // put words in spaces according to a combination
-int solveLength();                                             // try to solve by length
-int solveFit();                                                // try to solve by setup
-int solveConflict();                                           // try to solve by conflicts
-void loadtest();                                               // test function for testing
+int solve();                              // solve puzzle
+int getComb(int[], int, int, int, int[]); // get each combination
+void setWords(int[]);                     // put words in spaces according to a combination
+int solveLength();                        // try to solve by length
+int solveFit();                           // try to solve by setup
+int solveConflict();                      // try to solve by conflicts
+void loadtest();                          // test function for testing
 
 int main()
 {
@@ -50,8 +50,8 @@ int solve()
         wd_id_arr[i] = i;
     }
 
-    int starr[word_count];                                // temporary array to put combinations in
-    iterate(wd_id_arr, word_count, 0, word_count, starr); // solve for every combination
+    int starr[word_count]; // temporary array to put combinations in
+    getComb(wd_id_arr, word_count, 0, word_count, starr); // solve for every combination
 
     // no possible combination found
     printf("IMPOSSIBLE :(\n");
@@ -116,10 +116,10 @@ int solveConflict()
         }
     }
 
-    return 0; //no conflicts all good
+    return 0; // no conflicts all good
 }
 
-int iterate(int arr[], int n, int stack, int nb, int stackarr[])
+int getComb(int arr[], int n, int stack, int nb, int stackarr[])
 {
     if (n == 1) // found a combination
     {
@@ -164,7 +164,7 @@ int iterate(int arr[], int n, int stack, int nb, int stackarr[])
             }
         }
         int st = nb - (n - 1);
-        iterate(newarr, n - 1, st, nb, stackarr);
+        getComb(newarr, n - 1, st, nb, stackarr);
     }
 }
 
