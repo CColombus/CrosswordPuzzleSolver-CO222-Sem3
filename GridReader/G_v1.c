@@ -9,10 +9,10 @@ typedef struct _{
 }h_space;
 
 //structure for store vertical block information
-typedef struct  __{
-    int index_v[1][2];
-    int length_v;
-    char setup_v[100];
+typedef struct  _{
+    int index[1][2];
+    int length;
+    char setup[100];
 }v_space;
 
 
@@ -58,7 +58,7 @@ int main(){
 
     //printing the stored values in the stucture created for vertical blocks
     for (int i = 0; i<n; ++i){
-        printf("The vertical space at index [%d][%d] is %d spaces long and the format of the block is %s\n",v_vals[i].index_v[0][0], v_vals[i].index_v[0][1], v_vals[i].length_v, v_vals[i].setup_v);
+        printf("The vertical space at index [%d][%d] is %d spaces long and the format of the block is %s\n",v_vals[i].index[0][0], v_vals[i].index[0][1], v_vals[i].length, v_vals[i].setup);
     }
 }
 
@@ -121,15 +121,15 @@ int vertSpace(char transpose[][100], int k, v_space v_vals[]){
 
             if (count_v > 1 && (transpose[i][j] != '#')){
                 //printf("The vertical space at index [%d][%d] is %d spaces long\n", X, Y, count_v); //use this for direct printing purposes
-                v_vals[n].length_v = count_v;
-                v_vals[n].index_v[0][0] = X;
-                v_vals[n].index_v[0][1] = Y;
+                v_vals[n].length = count_v;
+                v_vals[n].index[0][0] = X;
+                v_vals[n].index[0][1] = Y;
                 int c = 0;
                 for (int j=X; j<X+count_v; ++j){
                     temp_n[c] = transpose[Y][j];
                     ++c;
                 }
-                strcpy(v_vals[n].setup_v, temp_n);
+                strcpy(v_vals[n].setup, temp_n);
                 memset(&temp_n[0], 0, sizeof(temp_n)); //emptying the temp array for the next iteration
                 count_v = 0;
                 ++n;
