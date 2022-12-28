@@ -90,7 +90,7 @@ int solveFit()
         for (size_t j = 0; j < space[i].length; j++)
         { // for each index in space
 
-            if (space[i].setup[j] != '-' && space[i].setup[j] != space[i].current[j])
+            if (space[i].setup[j] != '#' && space[i].setup[j] != space[i].current[j])
                 return 1; // cannot fit
         }
     }
@@ -182,20 +182,20 @@ void loadtest()
     **E***
     ***SIX
     ~~~~~Grid~~~~~
-    **-***
-    *----*
-    **-***
+    **#***
+    *####*
+    **#***
     ******
-    **-***
-    *-A-**
-    **-***
-    **-***
-    ***--X
+    **#***
+    *#A#**
+    **#***
+    **#***
+    ***##X
     */
     space_count = 5;
     word_count = 5;
     int direct[] = {1, 1, 0, 0, 1}; // 1 for horizonal 0 for vertical
-    char *spacelist[] = {"G---", "---", "---", "----", "--X"};
+    char *spacelist[] = {"G###", "###", "###", "####", "##X"};
     char *wordlist[] = {"SIX", "FLY", "BANE", "GLUE", "CAT"};
     int conwholist[10][10] = {                 //-1 if no conflict
                               {-1, 2, -1, -1}, // GLUE(0) is conflicted by FLY(2)
