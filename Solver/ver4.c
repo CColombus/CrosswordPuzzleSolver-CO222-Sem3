@@ -85,10 +85,10 @@ int solveLength()
 }
 
 int singleSolveLength(int who,int where){
-    space[where].current = word[who].text;
+    space[where].current = word[who].text; // put word(who) in relevant space(where)
     if (space[where].length != strlen(space[where].current))
             return 1; // diff lengths
-    return 0;
+    return 0; //same lengths
 }
 
 int solveFit()
@@ -111,11 +111,11 @@ int solveFit()
 int singleSolveFit(int who,int where){
     for (size_t j = 0; j < space[where].length; j++)
     { // for each index in space
-
+        //compare current with setup
         if (space[where].setup[j] != '#' && space[where].setup[j] != space[where].current[j])
             return 1; // cannot fit
     }
-    return 0;
+    return 0; //can be fitted
 }
 
 int solveConflict()
