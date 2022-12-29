@@ -29,27 +29,8 @@ void conHrz(int m, int n);
 void conVrt(int m, int n);
 int gridRead(char grid[][100], int rows, int cols);
 
-size_t space_count;
-sspace space[50]; // amount of spaces in grid
+sspace space[100]; // array which store the horizontal block information
 sgrid keep[10];
-
-typedef struct sword
-{
-    char *text;
-    size_t length;
-} sword;
-
-size_t word_count;
-sword word[50]; // amount of words given
-
-// Function prototype
-int solve();                              // solve puzzle
-int getComb(int[], int, int, int, int[]); // get each combination
-void setWords(int[]);                     // put words in spaces according to a combination
-int solveLength();                        // try to solve by length
-int solveFit();                           // try to solve by setup
-int solveConflict();                      // try to solve by conflicts
-void loadtest();                          // test function for testing
 
 int main()
 {
@@ -64,29 +45,11 @@ int main()
 
     cols = strlen(grid[0]);
 
-    // add one additional row and column as good luck
+    // add one additional row and column as failsafe
     rows++;
     cols++;
 
-    space_count = gridRead(grid, rows, cols);
-
-    printf("%d\n",space_count);
-
-    //////////////////GRID READING DONE ////////////////////////////
-
-    char wordlist[50][20];
-
-    for (word_count = 0; fgets(wordlist[word_count], 100, stdin)[0] != '\n'; word_count++)
-        for (int j = strcspn(wordlist[word_count], "\n"); j < 100; j++)
-            wordlist[word_count][j] = '\0';
-
-    for (size_t i = 0; i < word_count; i++)
-    {
-        word[i].text = wordlist[i];
-        word[i].length = strlen(wordlist[i]);
-    }
-
-    solve();
+    int space_count = gridRead(grid, rows, cols);
 
     return 0;
 }
@@ -103,6 +66,44 @@ int gridRead(char grid[][100], int rows, int cols)
     interVrt(m, n);
     conHrz(m, n);
     conVrt(m, n);
+
+    // printing the stored values in the stucture created for horizontal blocks
+    for (int i = 0; i < m; ++i)
+    {
+        printf("The horizontal space at index [%d][%d] is %d spaces long and the format of the block is %s\n", space[i].index[0][0], space[i].index[0][1], space[i].length, space[i].setup);
+        printf("The conwholist = ");
+        for (int j = 0; j < 10; ++j)
+        {
+            printf("%2d, ", space[i].conwho[j]);
+        }
+        printf("\n");
+        printf("The conidlist = ");
+        for (int j = 0; j < 10; ++j)
+        {
+            printf("%2d, ", space[i].conid[j]);
+        }
+        printf("\n");
+    }
+
+    printf("\n");
+
+    // printing the stored values in the stucture created for vertical blocks
+    for (int i = m; i < m + n; ++i)
+    {
+        printf("The vertical space at index [%d][%d] is %d spaces long and the format of the block is %s\n", space[i].index[0][0], space[i].index[0][1], space[i].length, space[i].setup);
+        printf("The conwholist = ");
+        for (int j = 0; j < 10; ++j)
+        {
+            printf("%2d, ", space[i].conwho[j]);
+        }
+        printf("\n");
+        printf("The conidlist = ");
+        for (int j = 0; j < 10; ++j)
+        {
+            printf("%2d, ", space[i].conid[j]);
+        }
+        printf("\n");
+    }
 
     return m+n;
 }
@@ -286,7 +287,7 @@ void conHrz(int m, int n)
         int temp = 0;
         for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
         {
-            if (keep[0].element[space[i].index[0][0]][j] == i)
+            if (keep[2].element[space[i].index[0][0]][j] == i && keep[2].element[space[i].index[0][0] + 1][j] == 0)
             {
                 space[i].conid[temp] = -1;
             }
@@ -324,7 +325,7 @@ void conVrt(int m, int n)
         int temp = 0;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
         {
-            if (keep[3].element[j][space[i].index[0][1]] == i)
+            if (keep[3].element[j][space[i].index[0][1]] == i && keep[3].element[j][space[i].index[0][1]+1] == 0)
             {
                 space[i].conid[temp] = -1;
             }
@@ -334,139 +335,5 @@ void conVrt(int m, int n)
             }
             ++temp;
         }
-    }
-}
-
-
-int solve()
-{
-    // list of indexes representing words
-    int wd_id_arr[word_count];
-    for (size_t i = 0; i < word_count; i++)
-    {
-        wd_id_arr[i] = i;
-    }
-
-    int starr[word_count]; // temporary array to put combinations in
-    getComb(wd_id_arr, word_count, 0, word_count, starr); // solve for every combination
-
-    // no possible combination found
-    printf("IMPOSSIBLE :(\n");
-    exit(0);
-    return 0;
-}
-
-void setWords(int currcomb[])
-{ // put each word in spaces according to current combination
-
-    /* printf("current comb is ");
-    for (size_t i = 0; i < space_count; i++) printf("%d, ",currcomb[i]);
-    printf("\n"); */
-
-    for (size_t i = 0; i < space_count; i++)
-    {
-        int getid = currcomb[i];
-
-        //space[i].current = word[getid].text;
-        strcpy(space[i].current,word[getid].text);
-    }
-}
-
-int solveLength()
-{
-
-    for (size_t i = 0; i < space_count; i++)
-    {
-        if (space[i].length != strlen(space[i].current))
-            return 1; // diff lengths
-    }
-
-    return 0; // lengths match
-}
-
-int solveFit()
-{
-
-    for (size_t i = 0; i < space_count; i++)
-    { // for each space
-
-        for (size_t j = 0; j < space[i].length; j++)
-        { // for each index in space
-
-            if (space[i].setup[j] != '#' && space[i].setup[j] != space[i].current[j])
-                return 1; // cannot fit
-        }
-    }
-
-    return 0; // can be fitted
-}
-
-int solveConflict()
-{ // return 1 if any conflict found
-    for (size_t i = 0; i < space_count; i++)
-    { // for each space
-
-        for (size_t j = 0; j < space[i].length; j++)
-        { // for each index in space
-
-            if (space[i].conwho[j] != -1)
-            {
-                int who = space[i].conwho[j];
-                int which = space[i].conid[j];
-                if (space[who].current[which] != space[i].current[j])
-                    return 1; // found conflict
-            }
-        }
-    }
-
-    return 0; // no conflicts all good
-}
-
-int getComb(int arr[], int n, int stack, int nb, int stackarr[])
-{
-    if (n == 1) // found a combination
-    {
-        stackarr[stack] = arr[0]; // complete the current combination
-
-        // solve for the current combination
-        setWords(stackarr); // put words in spaces
-
-        // match by lengths
-        if (solveLength())
-            return 0; // length does not match
-        // printf("possible by length\n");
-
-        // match by setups
-        if (solveFit())
-            return 0; // setup does not match
-        // printf("possible by fit\n");
-
-        // match by setups
-        if (solveConflict())
-            return 0; // conflict exists
-        // printf("possible by no conflict\n");
-
-        // passed all test for the current combination thus solved the puzzle
-        printf("SOLVED!!\n");
-        exit(0);
-
-        return 0;
-    }
-    for (size_t i = 0; i < n; i++)
-    {
-        stackarr[stack] = arr[i];
-        int newarr[n - 1], index = 0;
-        for (size_t j = 0; j < n; j++)
-        {
-            if (j == i)
-                continue;
-            else
-            {
-                newarr[index] = arr[j];
-                index++;
-            }
-        }
-        int st = nb - (n - 1);
-        getComb(newarr, n - 1, st, nb, stackarr);
     }
 }

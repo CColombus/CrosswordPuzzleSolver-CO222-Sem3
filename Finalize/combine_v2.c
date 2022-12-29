@@ -21,6 +21,7 @@ typedef struct sgrid
     char element[100][100];
 } sgrid;
 
+// Function Prototype (Reader)
 int spaceHrz(char grid[][100], int rows, int cols, int n); // funtion to get the horizontal block information
 int spaceVrt(char grid[][100], int rows, int cols, int m); // function to get the vertical block information
 void interHrz(int m);
@@ -31,7 +32,14 @@ int gridRead(char grid[][100], int rows, int cols);
 
 size_t space_count;
 sspace space[50]; // amount of spaces in grid
-sgrid keep[10];
+sgrid keep[5];
+/*
+    keep[0] = formatted grid to obtain "conwho" details of horizontal blocks
+    keep[1] = formatted grid to obtain "conwho" details of vertical blocks
+    keep[2] = formatted grid to obtain "conid" details of horizontal blocks
+    keep[3] = formatted grid to obtain "conid" details of vertical blocks
+    keep[4] = exact copy of the original grid for printing answers
+*/
 
 typedef struct sword
 {
@@ -42,14 +50,16 @@ typedef struct sword
 size_t word_count;
 sword word[50]; // amount of words given
 
-// Function prototype
-int solve();                               // solve puzzle
-int getComb(int[], int, int, int, int[]);  // get each combination
-void setWords(int[]);                      // put words in spaces according to a combination
+// Function prototype (Solver)
+int solve(int rows, int cols);                               // solve puzzle
+int getComb(int[], int, int, int, int[],int rows,int cols);  // get each combination
 int singleSolveLength(int who, int where); // try to solve by length
 int singleSolveFit(int who, int where);    // try to solve by setup
 int solveConflict();                       // try to solve by conflicts
 //void loadtest();                           // test function for testing
+
+//Function prototype (Printer)
+void printPuzzle(sgrid grid,int mn,int rows,int cols);
 
 int main()
 {
@@ -84,7 +94,7 @@ int main()
         word[i].length = strlen(wordlist[i]);
     }
 
-    solve();
+    solve(rows,cols);
 
     return 0;
 }
@@ -102,7 +112,9 @@ int gridRead(char grid[][100], int rows, int cols)
     conHrz(m, n);
     conVrt(m, n);
 
-    return m + n;
+    memcpy(keep[4].element,grid,sizeof(char)*100*100);
+    
+    return m+n;
 }
 
 // funtion to get the horizontal block information
@@ -284,7 +296,7 @@ void conHrz(int m, int n)
         int temp = 0;
         for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
         {
-            if (keep[0].element[space[i].index[0][0]][j] == i)
+            if (keep[2].element[space[i].index[0][0]][j] == i && keep[2].element[space[i].index[0][0] + 1][j] == 0)
             {
                 space[i].conid[temp] = -1;
             }
@@ -322,7 +334,7 @@ void conVrt(int m, int n)
         int temp = 0;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
         {
-            if (keep[3].element[j][space[i].index[0][1]] == i)
+            if (keep[3].element[j][space[i].index[0][1]] == i && keep[3].element[j][space[i].index[0][1]+1] == 0)
             {
                 space[i].conid[temp] = -1;
             }
@@ -335,7 +347,7 @@ void conVrt(int m, int n)
     }
 }
 
-int solve()
+int solve(int rows,int cols)
 {
     // list of indexes representing words
     int wd_id_arr[word_count];
@@ -345,7 +357,7 @@ int solve()
     }
 
     int starr[word_count];                                // temporary array to put combinations in
-    getComb(wd_id_arr, word_count, 0, word_count, starr); // solve for every combination
+    getComb(wd_id_arr, word_count, 0, word_count, starr,rows,cols); // solve for every combination
 
     // no possible combination found
     printf("IMPOSSIBLE :(\n");
@@ -393,7 +405,7 @@ int solveConflict()
     return 0; // no conflicts all good
 }
 
-int getComb(int arr[], int n, int stack, int nb, int stackarr[])
+int getComb(int arr[], int n, int stack, int nb, int stackarr[],int rows,int cols)
 {
     if (n == 1) // found a combination
     {
@@ -410,7 +422,7 @@ int getComb(int arr[], int n, int stack, int nb, int stackarr[])
         // printf("possible by no conflict\n");
 
         // passed all test for the current combination thus solved the puzzle
-        printf("SOLVED!!\n");
+        printPuzzle(keep[4],nb,rows,cols);
         exit(0);
 
         return 0;
@@ -438,6 +450,40 @@ int getComb(int arr[], int n, int stack, int nb, int stackarr[])
         }
         int st = nb - (n - 1);
         // try to solve with the new branch recursively
-        getComb(newarr, n - 1, st, nb, stackarr);
+        getComb(newarr, n - 1, st, nb, stackarr,rows,cols);
     }
+}
+
+void printPuzzle(sgrid grid,int mn,int rows,int cols){
+    for (size_t i = 0; i < mn; i++)
+    {
+        int goto_row=space[i].index[0][0];
+        int goto_col=space[i].index[0][1];
+
+        if (space[i].direct==1) //horizontal print
+        {
+            for (size_t col = 0; col < space[i].length; col++)
+            {
+                grid.element[goto_row][goto_col+col]=space[i].current[col];
+            }
+        }else   //vertical print
+        {
+            for (size_t row = 0; row < space[i].length; row++)
+            {
+                grid.element[goto_row+row][goto_col]=space[i].current[row];
+            }
+        }
+        
+    }
+    
+    //print the now complete grid to stdout
+    for (size_t r = 0; r < rows; r++)
+    {
+        for (size_t c = 0; c < cols; c++)
+        {
+            printf("%c",grid.element[r][c]);
+        }
+        printf("\n");
+    }
+    
 }
