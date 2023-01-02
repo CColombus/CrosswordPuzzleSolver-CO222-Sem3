@@ -70,14 +70,14 @@ int gridRead(char grid[][100], int rows, int cols)
     // printing the stored values in the stucture created for horizontal blocks
     for (int i = 0; i < m; ++i)
     {
-        printf("The horizontal space at index [%d][%d] is %d spaces long and the format of the block is %s\n", space[i].index[0][0], space[i].index[0][1], space[i].length, space[i].setup);
-        printf("The conwholist = ");
+        printf("[%d] The horizontal space at index [%d][%d] is %d spaces long and the format of the block is %s\n", i,space[i].index[0][0], space[i].index[0][1], space[i].length, space[i].setup);
+        printf("\twholist = ");
         for (int j = 0; j < 10; ++j)
         {
             printf("%2d, ", space[i].conwho[j]);
         }
         printf("\n");
-        printf("The conidlist = ");
+        printf("\tidlist = ");
         for (int j = 0; j < 10; ++j)
         {
             printf("%2d, ", space[i].conid[j]);
@@ -90,14 +90,14 @@ int gridRead(char grid[][100], int rows, int cols)
     // printing the stored values in the stucture created for vertical blocks
     for (int i = m; i < m + n; ++i)
     {
-        printf("The vertical space at index [%d][%d] is %d spaces long and the format of the block is %s\n", space[i].index[0][0], space[i].index[0][1], space[i].length, space[i].setup);
-        printf("The conwholist = ");
+        printf("[%d] The vertical space at index [%d][%d] is %d spaces long and the format of the block is %s\n", i,space[i].index[0][0], space[i].index[0][1], space[i].length, space[i].setup);
+        printf("\twholist = ");
         for (int j = 0; j < 10; ++j)
         {
             printf("%2d, ", space[i].conwho[j]);
         }
         printf("\n");
-        printf("The conidlist = ");
+        printf("\tidlist = ");
         for (int j = 0; j < 10; ++j)
         {
             printf("%2d, ", space[i].conid[j]);

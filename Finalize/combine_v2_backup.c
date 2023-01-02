@@ -270,6 +270,7 @@ void interVrt(int m, int n)
         }
     }
 }
+
 void conHrz(int m, int n)
 {
     for (int i = 0; i < 100; ++i)
@@ -282,10 +283,10 @@ void conHrz(int m, int n)
 
     for (int i = m; i < m + n; ++i)
     {
-        int temp = 1;
+        int temp = 0;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
         {
-            keep[2].element[j][space[i].index[0][1]] = 0 - temp;
+            keep[2].element[j][space[i].index[0][1]] = temp;
             ++temp;
         }
     }
@@ -295,13 +296,13 @@ void conHrz(int m, int n)
         int temp = 0;
         for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
         {
-            if (keep[2].element[space[i].index[0][0]][j] == i)
+            if (keep[2].element[space[i].index[0][0]][j] == i && keep[2].element[space[i].index[0][0] + 1][j] == 0)
             {
                 space[i].conid[temp] = -1;
             }
             else
             {
-                space[i].conid[temp] = (0 - keep[2].element[space[i].index[0][0]][j]) -1;
+                space[i].conid[temp] = keep[2].element[space[i].index[0][0]][j];
             }
             ++temp;
         }
@@ -320,10 +321,10 @@ void conVrt(int m, int n)
 
     for (int i = 0; i < m; ++i)
     {
-        int temp = 1;
+        int temp = 0;
         for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
         {
-            keep[3].element[space[i].index[0][0]][j] = 0 - temp;
+            keep[3].element[space[i].index[0][0]][j] = temp;
             ++temp;
         }
     }
@@ -333,13 +334,13 @@ void conVrt(int m, int n)
         int temp = 0;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
         {
-            if (keep[3].element[j][space[i].index[0][1]] == i)
+            if (keep[3].element[j][space[i].index[0][1]] == i && keep[3].element[j][space[i].index[0][1]+1] == 0)
             {
                 space[i].conid[temp] = -1;
             }
             else
             {
-                space[i].conid[temp] = (0 - keep[3].element[j][space[i].index[0][1]]) -1;
+                space[i].conid[temp] = keep[3].element[j][space[i].index[0][1]];
             }
             ++temp;
         }
