@@ -66,7 +66,7 @@ int main()
     char grid[100][100]; // to store the given ccrossword puzzle grid
     int rows, cols;
 
-    //printf("Enter the grid: \n");
+    // printf("Enter the grid: \n");
 
     for (rows = 0; fgets(grid[rows], 100, stdin)[0] != '\n'; rows++)
     {
@@ -486,10 +486,6 @@ void printPuzzle(sgrid grid, int mn, int rows, int cols)
     // print the now complete grid to stdout
     for (size_t r = 0; r < rows - 1; r++)
     {
-        for (size_t c = 0; c < cols; c++)
-        {
-            printf("%c", grid.element[r][c]);
-        }
-        printf("\n");
+        printf("%s\n", grid.element[r]);
     }
 }
