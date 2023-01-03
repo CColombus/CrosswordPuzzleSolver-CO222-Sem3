@@ -51,11 +51,11 @@ size_t word_count;
 sword word[50]; // amount of words given
 
 // Function prototype (Solver)
-int solve(int rows, int cols);                                // solve puzzle
-int getComb(int[], int, int, int, int[], int rows, int cols); // get each combination
-int singleSolveLength(int who, int where);                    // try to solve by length
-int singleSolveFit(int who, int where);                       // try to solve by setup
-int solveConflict();                                          // try to solve by conflicts
+int solve(int rows, int cols);                                 // solve puzzle
+void getComb(int[], int, int, int, int[], int rows, int cols); // get each combination
+int singleSolveLength(int who, int where);                     // try to solve by length
+int singleSolveFit(int who, int where);                        // try to solve by setup
+int solveConflict();                                           // try to solve by conflicts
 // void loadtest();                           // test function for testing
 
 // Function prototype (Printer)
@@ -66,7 +66,7 @@ int main()
     char grid[100][100]; // to store the given ccrossword puzzle grid
     int rows, cols;
 
-    printf("Enter the grid: \n");
+    //printf("Enter the grid: \n");
 
     for (rows = 0; fgets(grid[rows], 100, stdin)[0] != '\n'; rows++)
     {
@@ -132,7 +132,7 @@ int spaceHrz(char grid[][100], int rows, int cols, int n)
     char temp[100];
     for (int i = 0; i <= rows; ++i)
     {
-        int count_h = 0, I, J;
+        int count_h = 0, I = 0, J = 0;
         for (int j = 0; j < cols; ++j)
         {
             if (grid[i][j] == '#' || (grid[i][j] >= 65 && grid[i][j] <= 90))
@@ -147,7 +147,6 @@ int spaceHrz(char grid[][100], int rows, int cols, int n)
 
             if (count_h > 1 && (grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90)))
             {
-                int p;
                 space[m + n].direct = 1;
                 space[m + n].place = m + n;
                 space[m + n].length = count_h;
@@ -182,7 +181,7 @@ int spaceVrt(char grid[][100], int rows, int cols, int m)
     char temp_n[100];
     for (int i = 0; i < cols; ++i)
     {
-        int count_v = 0, X, Y;
+        int count_v = 0, X = 0, Y = 0;
         for (int j = 0; j < rows; ++j)
         {
             if (grid[j][i] == '#' || (grid[j][i] >= 65 && grid[j][i] <= 90))
@@ -412,27 +411,27 @@ int solveConflict()
     return 0; // no conflicts all good
 }
 
-int getComb(int arr[], int n, int stack, int nb, int stackarr[], int rows, int cols)
+void getComb(int arr[], int n, int stack, int nb, int stackarr[], int rows, int cols)
 {
     if (n == 1) // found a combination
     {
         stackarr[stack] = arr[0]; // complete the current combination
 
         if (singleSolveLength(arr[0], stack))
-            return 0; // assign word into the space and compare lengths
+            return; // assign word into the space and compare lengths
         if (singleSolveFit(arr[0], stack))
-            return 0; // compare the fit with setup
+            return; // compare the fit with setup
 
         // match by conflicting intersections
         if (solveConflict())
-            return 0; // conflict exists
+            return; // conflict exists
         // printf("possible by no conflict\n");
 
         // passed all test for the current combination thus solved the puzzle
         printPuzzle(keep[4], nb, rows, cols);
         exit(0);
 
-        return 0;
+        return;
     }
     for (size_t i = 0; i < n; i++)
     {
