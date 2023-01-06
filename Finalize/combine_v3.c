@@ -6,16 +6,21 @@
 // structure for storing information of spaces to solve
 typedef struct sspace
 {
-    int place;
-    int index[1][2];
-    int length;
-    int direct;
-    char setup[100];
-    char current[100];
-    char conwho[100];
-    char conid[100];
+    int place;  //to store the index of the space when stored in space[]
+    int index[1][2]; //starting index of a space
+    int length;  //length of the space
+    int direct;  //direction of the space(horizontal=1 , vertical=0)
+    char setup[100];   //format of the space
+    char current[100]; //to store the assigned words for the relevant space block
+    char conwho[100];  //with which spaces does a certain space intersect with
+    char conid[100];   //if the space intersect with another space which indexes of that space does it intersect with
 } sspace;
 
+/*
+structure for storing formatted versions of the grid. 
+As the program proceeds we format the grid to fulfil our tasks.
+We store them in here because we have to use them again and again in our program
+*/
 typedef struct sgrid
 {
     char element[100][100];
@@ -24,14 +29,14 @@ typedef struct sgrid
 // Function Prototype (Reader)
 int spaceHrz(char grid[][100], int rows, int cols, int n); // funtion to get the horizontal block information
 int spaceVrt(char grid[][100], int rows, int cols, int m); // function to get the vertical block information
-void interHrz(int m);
-void interVrt(int m, int n);
-void conHrz(int m, int n);
-void conVrt(int m, int n);
-int gridRead(char grid[][100], int rows, int cols);
+void interHrz(int m);                                      //function which obtain the "conwho" details of horizontal blocks
+void interVrt(int m, int n);                               //function which obtain the "conwho" details of vertical blocks
+void conHrz(int m, int n);                                 //function which obtain the "conid" details of horizontal blocks
+void conVrt(int m, int n);                                 //function which obtain the "conid" details of vertical blocks
+int gridRead(char grid[][100], int rows, int cols);        //function which initiate the grid reading process
 
-size_t space_count;
-sspace space[50]; // amount of spaces in grid
+size_t space_count; // amount of spaces in grid
+sspace space[50]; 
 sgrid keep[5];
 /*
     keep[0] = formatted grid to obtain "conwho" details of horizontal blocks
@@ -47,8 +52,8 @@ typedef struct sword
     size_t length;
 } sword;
 
-size_t word_count;
-sword word[50]; // amount of words given
+size_t word_count; // amount of words given
+sword word[50]; 
 
 // Function prototype (Solver)
 int solve(int rows, int cols);                                 // solve puzzle
@@ -118,7 +123,7 @@ int main()
     return 0;
 }
 
-int gridRead(char grid[][100], int rows, int cols)
+int gridRead(char grid[][100], int rows, int cols)  //function which initiate the grid reading process
 {
     int m = 0, n = 0;
 
@@ -140,23 +145,23 @@ int gridRead(char grid[][100], int rows, int cols)
 int spaceHrz(char grid[][100], int rows, int cols, int n)
 {
     int m = 0;
-    char temp[100];
+    char temp[100]; //temmporary array which stores the format of the space
     for (int i = 0; i <= rows; ++i)
     {
         int count_h = 0, I = 0, J = 0;
         for (int j = 0; j < cols; ++j)
         {
             if (grid[i][j] == '#' || (grid[i][j] >= 65 && grid[i][j] <= 90))
-            { // This should also consider partially filled letters
-                ++count_h;
-                if (count_h == 1)
+            { 
+                ++count_h;  //variable which stores the length of the space block
+                if (count_h == 1) //to capture the starting index of the space block
                 {
                     I = i;
                     J = j;
                 }
             }
 
-            if (count_h > 1 && (grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90)))
+            if (count_h > 1 && (grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90))) //obtaining the requires structural data of the space block
             {
                 space[m + n].direct = 1;
                 space[m + n].place = m + n;
@@ -176,7 +181,7 @@ int spaceHrz(char grid[][100], int rows, int cols, int n)
                 ++m;
             }
 
-            if ((grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90)))
+            if ((grid[i][j] != '#' && (grid[i][j] < 65 || grid[i][j] > 90))) //identifying the end of the block
             {
                 count_h = 0;
             }
@@ -189,7 +194,7 @@ int spaceHrz(char grid[][100], int rows, int cols, int n)
 int spaceVrt(char grid[][100], int rows, int cols, int m)
 {
     int n = 0;
-    char temp_n[100];
+    char temp_n[100];  //temmporary array which stores the format of the space
     for (int i = 0; i < cols; ++i)
     {
         int count_v = 0, X = 0, Y = 0;
@@ -197,15 +202,15 @@ int spaceVrt(char grid[][100], int rows, int cols, int m)
         {
             if (grid[j][i] == '#' || (grid[j][i] >= 65 && grid[j][i] <= 90))
             {
-                ++count_v;
-                if (count_v == 1)
+                ++count_v; //variable which stores the length of the space block
+                if (count_v == 1) //to capture the starting index of the space block
                 {
                     Y = j;
                     X = i;
                 }
             }
 
-            if (count_v > 1 && (grid[j][i] != '#' && (grid[j][i] < 65 || grid[j][i] > 90)))
+            if (count_v > 1 && (grid[j][i] != '#' && (grid[j][i] < 65 || grid[j][i] > 90)))  //obtaining the requires structural data of the space block
             {
                 space[m + n].direct = 0;
                 space[m + n].length = count_v;
@@ -224,7 +229,7 @@ int spaceVrt(char grid[][100], int rows, int cols, int m)
                 ++n;
             }
 
-            if ((grid[j][i] != '#' && (grid[j][i] < 65 || grid[j][i] > 90)))
+            if ((grid[j][i] != '#' && (grid[j][i] < 65 || grid[j][i] > 90)))  //identifying the end of the block
             {
                 count_v = 0;
             }
@@ -233,12 +238,12 @@ int spaceVrt(char grid[][100], int rows, int cols, int m)
     return n;
 }
 
-void interHrz(int m)
+void interHrz(int m)  //function which obtain the "conwho" details of horizontal blocks
 {
     for (int i = 0; i < m; ++i)
     {
         int temp = 0;
-        for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
+        for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j) //obtainig "conwho" details from the formatted grid
         {
             if (keep[0].element[space[i].index[0][0]][j] == i)
             {
@@ -253,9 +258,9 @@ void interHrz(int m)
     }
 }
 
-void interVrt(int m, int n)
+void interVrt(int m, int n)  //function which obtain the "conwho" details of vertical blocks
 {
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 100; ++i)  //formatting the grid to obtain the "conwho" details of vertical blocks
     {
         for (int j = 0; j < 100; ++j)
         {
@@ -271,7 +276,7 @@ void interVrt(int m, int n)
         }
     }
 
-    for (int i = m; i < m + n; ++i)
+    for (int i = m; i < m + n; ++i) //obtainig "conwho" details from the formatted grid
     {
         int temp = 0;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
@@ -288,9 +293,9 @@ void interVrt(int m, int n)
         }
     }
 }
-void conHrz(int m, int n)
+void conHrz(int m, int n)   //function which obtain the "conid" details of horizontal blocks
 {
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 100; ++i)  //formatting the grid to obtain the "conid" details of horizontal blocks
     {
         for (int j = 0; j < 100; ++j)
         {
@@ -300,6 +305,7 @@ void conHrz(int m, int n)
 
     for (int i = m; i < m + n; ++i)
     {
+        //initializing a special indexing method to avoid conflicts from previously stored index values in the grid
         int temp = 1;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
         {
@@ -308,7 +314,7 @@ void conHrz(int m, int n)
         }
     }
 
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) //obtainig "conid" details from the formatted grid
     {
         int temp = 0;
         for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
@@ -326,9 +332,9 @@ void conHrz(int m, int n)
     }
 }
 
-void conVrt(int m, int n)
+void conVrt(int m, int n)  //function which obtain the "conid" details of vertical blocks
 {
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 100; ++i) //formatting the grid to obtain the "conid" details of vertical blocks
     {
         for (int j = 0; j < 100; ++j)
         {
@@ -338,6 +344,7 @@ void conVrt(int m, int n)
 
     for (int i = 0; i < m; ++i)
     {
+        //initializing a special indexing method to avoid conflicts from previously stored index values in the grid
         int temp = 1;
         for (int j = space[i].index[0][1]; j < space[i].index[0][1] + space[i].length; ++j)
         {
@@ -346,7 +353,7 @@ void conVrt(int m, int n)
         }
     }
 
-    for (int i = m; i < m + n; ++i)
+    for (int i = m; i < m + n; ++i)  //obtainig "conid" details from the formatted grid
     {
         int temp = 0;
         for (int j = space[i].index[0][0]; j < space[i].index[0][0] + space[i].length; ++j)
@@ -357,7 +364,7 @@ void conVrt(int m, int n)
             }
             else
             {
-                space[i].conid[temp] = (0 - keep[3].element[j][space[i].index[0][1]]) - 1;
+                space[i].conid[temp] = (0 - keep[3].element[j][space[i].index[0][1]]) -1;
             }
             ++temp;
         }
