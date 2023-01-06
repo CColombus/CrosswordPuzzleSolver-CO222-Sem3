@@ -66,7 +66,7 @@ int gridRead(char grid[][100], int rows, int cols)
     interVrt(m, n);
     conHrz(m, n);
     conVrt(m, n);
-
+/*
     // printing the stored values in the stucture created for horizontal blocks
     for (int i = 0; i < m; ++i)
     {
@@ -104,6 +104,8 @@ int gridRead(char grid[][100], int rows, int cols)
         }
         printf("\n");
     }
+*/
+    for (int i = 0; i < m + n; ++i) printf("%s\n",space[i].setup);
 
     return m+n;
 }

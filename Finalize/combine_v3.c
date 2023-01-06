@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-// structure for store horizontal block information
+// structure for storing information of spaces to solve
 typedef struct sspace
 {
     int place;
@@ -52,10 +52,10 @@ sword word[50]; // amount of words given
 
 // Function prototype (Solver)
 int solve(int rows, int cols);                                 // solve puzzle
-void getComb(int[], int, int, int, int[], int rows, int cols); // get each combination
-int singleSolveLength(int who, int where);                     // try to solve by length
-int singleSolveFit(int who, int where);                        // try to solve by setup
-int solveConflict();                                           // try to solve by conflicts
+void getComb(int[], int, int, int, int[], int rows, int cols); // get each combination and check wether it matches
+int singleSolveLength(int who, int where);                     // try to solve a space by length
+int singleSolveFit(int who, int where);                        // try to solve a space by setup
+int solveConflict();                                           // try to solve every space by conflicts
 // void loadtest();                           // test function for testing
 
 // Function prototype (Printer)
@@ -66,8 +66,7 @@ int main()
     char grid[100][100]; // to store the given ccrossword puzzle grid
     int rows, cols;
 
-    // printf("Enter the grid: \n");
-
+    // get each row of puzzle grid one by one
     for (rows = 0; fgets(grid[rows], 100, stdin)[0] != '\n'; rows++)
     {
         for (int j = strcspn(grid[rows], "\n"); j < 100; j++)
@@ -76,18 +75,21 @@ int main()
             grid[rows][i] = ((grid[rows][i] >= 97) && (grid[rows][i] <= 122)) ? grid[rows][i] - 32 : grid[rows][i];
     }
 
+    // how many columns?
     cols = strlen(grid[0]);
 
     // add one additional row and column for good luck
     rows++;
     cols++;
 
+    // grid reading function returns the total number of spaces found
     space_count = gridRead(grid, rows, cols);
 
-    //////////////////GRID READING DONE ////////////////////////////
+    /////////////////////GRID READING DONE ////////////////////////////
 
     char wordlist[50][20];
 
+    // get each word one by one
     for (word_count = 0; fgets(wordlist[word_count], 100, stdin)[0] != '\n'; word_count++)
     {
         for (int j = strcspn(wordlist[word_count], "\n"); j < 100; j++)
@@ -96,12 +98,21 @@ int main()
             wordlist[word_count][i] = ((wordlist[word_count][i] >= 97) && (wordlist[word_count][i] <= 122)) ? wordlist[word_count][i] - 32 : wordlist[word_count][i];
     }
 
+    // asigning words to a word structure
     for (size_t i = 0; i < word_count; i++)
     {
         word[i].text = wordlist[i];
         word[i].length = strlen(wordlist[i]);
     }
 
+    // if not enough words are given to fill the spaces no point in solving
+    if (word_count < space_count)
+    {
+        printf("IMPOSSIBLE\n");
+        exit(0);
+    }
+
+    //
     solve(rows, cols);
 
     return 0;
@@ -355,12 +366,15 @@ void conVrt(int m, int n)
 
 int solve(int rows, int cols)
 {
-    // list of indexes representing words
+    // list of consecutive indexes representing each given word
     int wd_id_arr[word_count];
     for (size_t i = 0; i < word_count; i++)
     {
         wd_id_arr[i] = i;
     }
+
+    // we will try getting different combinations of this list and
+    // try assign them to each space by thier index and see if it matches
 
     int starr[word_count];                                            // temporary array to put combinations in
     getComb(wd_id_arr, word_count, 0, word_count, starr, rows, cols); // solve for every combination
@@ -372,7 +386,7 @@ int solve(int rows, int cols)
 }
 
 int singleSolveLength(int who, int where)
-{
+{                                                 // try to match a space with a word by comparing their lengths
     strcpy(space[where].current, word[who].text); // put word(who) in relevant space(where)
     if (space[where].length != strlen(space[where].current))
         return 1; // diff lengths
@@ -380,7 +394,7 @@ int singleSolveLength(int who, int where)
 }
 
 int singleSolveFit(int who, int where)
-{
+{ // try to match a space with a word by comparing the given letters inside the puzzle grid
     for (size_t j = 0; j < space[where].length; j++)
     { // for each index in space
         // compare current with setup
@@ -412,20 +426,20 @@ int solveConflict()
 }
 
 void getComb(int arr[], int n, int stack, int nb, int stackarr[], int rows, int cols)
-{
-    if (n == 1) // found a combination
-    {
-        stackarr[stack] = arr[0]; // complete the current combination
+{ // get each combination and see if it matches, return if no match found
+    if (n == 1)
+    { // found a combination
+        // complete the current combination
+        stackarr[stack] = arr[0];
 
         if (singleSolveLength(arr[0], stack))
-            return; // assign word into the space and compare lengths
+            return; // assign the last word into the space and compare lengths
         if (singleSolveFit(arr[0], stack))
             return; // compare the fit with setup
 
         // match by conflicting intersections
         if (solveConflict())
             return; // conflict exists
-        // printf("possible by no conflict\n");
 
         // passed all test for the current combination thus solved the puzzle
         printPuzzle(keep[4], nb, rows, cols);
@@ -455,18 +469,21 @@ void getComb(int arr[], int n, int stack, int nb, int stackarr[], int rows, int 
             }
         }
         int st = nb - (n - 1);
+
         // try to solve with the new branch recursively
         getComb(newarr, n - 1, st, nb, stackarr, rows, cols);
     }
 }
 
 void printPuzzle(sgrid grid, int mn, int rows, int cols)
-{
+{ // replaces the # in puzzle with letters from solved spaces
     for (size_t i = 0; i < mn; i++)
     {
+        // get the starting points of each space relative to the puzzle grid
         int goto_row = space[i].index[0][0];
         int goto_col = space[i].index[0][1];
 
+        // now to replace each grid element with thier respective letter
         if (space[i].direct == 1) // horizontal print
         {
             for (size_t col = 0; col < space[i].length; col++)
