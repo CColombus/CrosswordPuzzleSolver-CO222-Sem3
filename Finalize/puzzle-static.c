@@ -96,7 +96,17 @@ int main()
         for (int j = strcspn(grid[rows], "\n"); j < 100; j++)
             grid[rows][j] = '\0';
         for (size_t i = 0; i < strlen(grid[rows]); i++)
+        {                                                                    // input validation
+            if (!((grid[rows][i] >= 65) && (grid[rows][i] <= 90)))           // is not simple?
+                if (!((grid[rows][i] >= 97) && (grid[rows][i] <= 122)))      // is not capital?
+                    if (!((grid[rows][i] == '*') || (grid[rows][i] == '#'))) // is not # or *?
+                    {
+                        printf("INVALID INPUT\n");
+                        exit(0);
+                    }
+            // simple to capital
             grid[rows][i] = ((grid[rows][i] >= 97) && (grid[rows][i] <= 122)) ? grid[rows][i] - 32 : grid[rows][i];
+        }
     }
 
     // how many columns?
@@ -111,11 +121,20 @@ int main()
 
     // get each word one by one
     for (word_count = 0; fgets(wordlist[word_count], 100, stdin)[0] != '\n'; word_count++)
-    {
+    { // input validation
         for (int j = strcspn(wordlist[word_count], "\n"); j < 100; j++)
             wordlist[word_count][j] = '\0';
         for (size_t i = 0; i < strlen(wordlist[word_count]); i++)
+        {
+            if (!((wordlist[word_count][i] >= 65) && (wordlist[word_count][i] <= 90)))      // is not simple?
+                if (!((wordlist[word_count][i] >= 97) && (wordlist[word_count][i] <= 122))) // is not capital?
+                {
+                    printf("INVALID INPUT\n");
+                    exit(0);
+                }
+            // simple to capital
             wordlist[word_count][i] = ((wordlist[word_count][i] >= 97) && (wordlist[word_count][i] <= 122)) ? wordlist[word_count][i] - 32 : wordlist[word_count][i];
+        }
     }
 
     // asigning words to a word structure
