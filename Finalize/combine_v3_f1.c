@@ -1,3 +1,19 @@
+/*
+ * The program to solve a crossword puzzle.
+ * The program will read a puzzle grid and a set of words
+ * from STDIN and will solve and print the solved puzzle
+ * to STDOUT.
+ * Any letter input will be CAPITALIZED and
+ * taken as a valid input.
+ * Any invalid input or unsolveable puzzle will result in
+ * printing IMPOSSIBLE to STDOUT.
+ *
+ * @title C0222 - Semester 3 Project - Crossword Puzzle Solver - Phase I
+ * @group 05
+ * @authors E/19/057    COLOMBAGE C.O.
+ * @authors E/19/409    UDUGAMASOORIYA D.P.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,16 +42,6 @@ typedef struct sgrid
     char element[100][100];
 } sgrid;
 
-// Function Prototype (Reader)
-int spaceHrz(char grid[][100], int rows, int cols, int n);              // funtion to get the horizontal block information
-int spaceVrt(char grid[][100], int rows, int cols, int m);              // function to get the vertical block information
-void interHrz(int m);                                                   // function which obtain the "conwho" details of horizontal blocks
-void interVrt(int m, int n);                                            // function which obtain the "conwho" details of vertical blocks
-void conHrz(int m, int n);                                              // function which obtain the "conid" details of horizontal blocks
-void conVrt(int m, int n);                                              // function which obtain the "conid" details of vertical blocks
-int gridRead(char grid[][100], int rows, int cols);                     // function which initiate the grid reading process
-int space_edge_case_single(sgrid org_grid, int rows, int cols, int mn); // function for finding single width spaces
-
 size_t space_count; // amount of spaces in grid
 sspace space[50];
 sgrid keep[6];
@@ -48,6 +54,7 @@ sgrid keep[6];
     keep[5] = formatted grid for finding single width spaces (edge case)
 */
 
+// structure for storing words given
 typedef struct sword
 {
     char *text;
@@ -56,6 +63,16 @@ typedef struct sword
 
 size_t word_count; // amount of words given
 sword word[50];
+
+// Function Prototype (Reader)
+int spaceHrz(char grid[][100], int rows, int cols, int n);              // funtion to get the horizontal block information
+int spaceVrt(char grid[][100], int rows, int cols, int m);              // function to get the vertical block information
+void interHrz(int m);                                                   // function which obtain the "conwho" details of horizontal blocks
+void interVrt(int m, int n);                                            // function which obtain the "conwho" details of vertical blocks
+void conHrz(int m, int n);                                              // function which obtain the "conid" details of horizontal blocks
+void conVrt(int m, int n);                                              // function which obtain the "conid" details of vertical blocks
+int gridRead(char grid[][100], int rows, int cols);                     // function which initiate the grid reading process
+int space_edge_case_single(sgrid org_grid, int rows, int cols, int mn); // function for finding single width spaces
 
 // Function prototype (Solver)
 int solve(int rows, int cols);                                 // solve puzzle
@@ -84,10 +101,6 @@ int main()
 
     // how many columns?
     cols = strlen(grid[0]);
-
-    /* // add one additional row and column for good luck
-    rows++;
-    cols++; */
 
     // grid reading function returns the total number of spaces found
     space_count = gridRead(grid, rows, cols);
@@ -119,7 +132,7 @@ int main()
         exit(0);
     }
 
-    //
+    // calling solver
     solve(rows, cols);
 
     return 0;
@@ -138,8 +151,10 @@ int gridRead(char grid[][100], int rows, int cols) // function which initiate th
     conHrz(m, n);
     conVrt(m, n);
 
+    // storing exact copy of input grid for future use
     memcpy(keep[4].element, grid, sizeof(char) * 100 * 100);
 
+    // special function for solving edge cases with single width spaces
     s = space_edge_case_single(keep[4], rows, cols, m + n);
 
     return m + n + s;
@@ -345,6 +360,7 @@ void interVrt(int m, int n) // function which obtain the "conwho" details of ver
         }
     }
 }
+
 void conHrz(int m, int n) // function which obtain the "conid" details of horizontal blocks
 {
     for (int i = 0; i < 100; ++i) // formatting the grid to obtain the "conid" details of horizontal blocks
