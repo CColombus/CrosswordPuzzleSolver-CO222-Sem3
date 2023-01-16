@@ -839,4 +839,10 @@ void freeMemory(){
         free(space[i]);
     }
     free(space);
+
+    free(d_keep_0);
+    free(d_keep_1);
+    free(d_keep_2);
+    free(d_keep_3);
+    free(d_keep_4);
 }
