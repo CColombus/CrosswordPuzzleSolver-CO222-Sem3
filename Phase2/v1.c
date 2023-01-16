@@ -77,6 +77,7 @@ int solveConflict();                                           // try to solve e
 
 // Function prototype (Printer)
 void printPuzzle(int mn, int rows, int cols);
+void freeMemory();
 
 int main()
 {
@@ -156,6 +157,7 @@ int main()
     if (word_count < space_count)
     {
         printf("IMPOSSIBLE\n");
+        freeMemory();
         exit(0);
     }
 
@@ -733,6 +735,7 @@ void getComb(int arr[], int n, int stack, int nb, int stackarr[], int rows, int 
 
         // passed all test for the current combination thus solved the puzzle
         printPuzzle(nb, rows, cols);
+        freeMemory();
         exit(0);
 
         return;
@@ -821,4 +824,18 @@ void printPuzzle(int mn, int rows, int cols)
     { // freeing dynamic arrays
         free(grid[i]);
     }
+}
+
+void freeMemory(){
+    for (size_t i = 0; i < word_count; i++)
+    {
+        free(word[i]);
+    }
+    free(word);
+
+    for (size_t i = 0; i < space_count; i++)
+    {
+        free(space[i]);
+    }
+    free(space);
 }
