@@ -150,8 +150,12 @@ int main()
         word[i]->text = malloc(strlen(wordlist[i]) * sizeof(char));
         strcpy(word[i]->text, wordlist[i]);
         word[i]->length = strlen(wordlist[i]);
+    }
+
+    for (size_t i = 0; i < rows * cols; i++) {
         free(wordlist[i]);
     }
+    
     free(wordlist);
 
     // grid reading function returns the total number of spaces found
