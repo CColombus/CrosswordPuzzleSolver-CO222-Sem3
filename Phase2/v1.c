@@ -673,6 +673,7 @@ int solve(int rows, int cols)
 
     // no possible combination found
     printf("IMPOSSIBLE\n");
+    freeMemory();
     exit(0);
     return 0;
 }
