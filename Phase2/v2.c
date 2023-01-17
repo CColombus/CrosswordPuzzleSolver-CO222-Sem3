@@ -162,7 +162,7 @@ int main()
     space_count = gridRead(grid, rows, cols);
 
     // if not enough words are given to fill the spaces no point in solving
-    if (word_count < space_count)
+    if (word_count != space_count)
     {
         printf("IMPOSSIBLE\n");
         freeMemory();
